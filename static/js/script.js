@@ -1,61 +1,39 @@
-// Add a new task
-function addTask() {
-    const taskName = document.getElementById("task-name").value;
-    if (taskName) {
-        // Send the task to the backend (you can modify this to interact with the server)
-        const task = {
-            task: taskName
-        };
+let score = 0;
+let gameArea = document.getElementById("game-area");
+let scoreDisplay = document.getElementById("score");
+let panda = document.getElementById("panda");
+let presents = document.querySelectorAll(".present");
 
-        fetch('/add_task', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
-        })
-        .then(response => response.json())
-        .then(data => {
-            const task = data.task;
-            const taskList = document.getElementById('task-list');
-            const newTask = document.createElement('li');
-            newTask.className = 'task-item';
-            newTask.id = 'task-' + task.id;
-            newTask.innerHTML = `
-                <input type="checkbox" id="checkbox-${task.id}" onclick="toggleTask(${task.id})">
-                <span class="task-text">${task.task}</span>
-                <button class="delete-btn" onclick="deleteTask(${task.id})">❌</button>
-            `;
-            taskList.appendChild(newTask);
-            newTask.classList.add('task-added');
-            document.getElementById("task-name").value = '';  // Reset the input field
-        })
-        .catch(error => console.error('Error adding task:', error));
-    }
+// Function to randomize present position
+function movePresent(present) {
+    const xPos = Math.random() * (gameArea.offsetWidth - present.offsetWidth);
+    const yPos = Math.random() * (gameArea.offsetHeight - present.offsetHeight);
+    present.style.left = `${xPos}px`;
+    present.style.top = `${yPos}px`;
 }
 
-// Toggle task completion
-function toggleTask(taskId) {
-    const taskItem = document.getElementById('task-' + taskId);
-    const checkbox = document.getElementById('checkbox-' + taskId);
-    const taskText = taskItem.querySelector('.task-text');
-    
-    if (checkbox.checked) {
-        taskText.style.textDecoration = 'line-through';
-        taskText.style.color = '#888';
-    } else {
-        taskText.style.textDecoration = 'none';
-        taskText.style.color = '#000';
-    }
+// Add event listener to each present
+presents.forEach(present => {
+    present.addEventListener("click", function() {
+        score += 10;
+        scoreDisplay.textContent = score;
+
+        // Move the present to a new random position
+        movePresent(present);
+
+        // Check if the score reaches 100
+        if (score >= 100) {
+            showPanda();
+        }
+    });
+});
+
+// Show Panda when score reaches 100
+function showPanda() {
+    panda.classList.remove("hidden");
 }
 
-// Delete a task
-function deleteTask(taskId) {
-    const taskItem = document.getElementById('task-' + taskId);
-    
-    // Fade out and then remove task
-    taskItem.classList.add('task-deleted');
-    setTimeout(() => {
-        taskItem.remove();
-    }, 1000); // Match the animation time
-}
+// Start the game by moving presents to random positions
+presents.forEach(present => {
+    movePresent(present);
+});
