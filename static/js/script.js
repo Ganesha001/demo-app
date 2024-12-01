@@ -27,6 +27,7 @@ function addTask() {
                 <button class="delete-btn" onclick="deleteTask(${task.id})">❌</button>
             `;
             taskList.appendChild(newTask);
+            newTask.classList.add('task-added');
             document.getElementById("task-name").value = '';  // Reset the input field
         })
         .catch(error => console.error('Error adding task:', error));
@@ -40,17 +41,21 @@ function toggleTask(taskId) {
     const taskText = taskItem.querySelector('.task-text');
     
     if (checkbox.checked) {
-        taskText.classList.add('completed');
+        taskText.style.textDecoration = 'line-through';
+        taskText.style.color = '#888';
     } else {
-        taskText.classList.remove('completed');
+        taskText.style.textDecoration = 'none';
+        taskText.style.color = '#000';
     }
 }
 
-// Delete task
+// Delete a task
 function deleteTask(taskId) {
     const taskItem = document.getElementById('task-' + taskId);
-    taskItem.remove();
-
-    // Send delete request to server if needed
-    // fetch('/delete_task', { method: 'DELETE', body: JSON.stringify({ id: taskId }) });
+    
+    // Fade out and then remove task
+    taskItem.classList.add('task-deleted');
+    setTimeout(() => {
+        taskItem.remove();
+    }, 1000); // Match the animation time
 }

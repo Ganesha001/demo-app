@@ -1,24 +1,31 @@
 /* General Layout */
 body {
     font-family: 'Arial', sans-serif;
-    background: #f0f0f0;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    flex-direction: column;
+    background: linear-gradient(45deg, #f06, #f79);
+    animation: backgroundColorChange 8s infinite alternate; /* Background Color Change */
+    transition: background-color 1s ease-in-out;
 }
 
+/* Container */
 .container {
     width: 100%;
     max-width: 600px;
     padding: 20px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.container:hover {
+    transform: scale(1.05); /* Slightly enlarge the container when hovered */
 }
 
 header {
@@ -29,16 +36,22 @@ header {
 h1 {
     font-size: 36px;
     color: #333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: slideIn 1s ease-out;
 }
 
 p {
     font-size: 16px;
     color: #666;
+    animation: fadeIn 1.5s ease-out;
 }
 
+/* Task Input Styling */
 .task-input {
     display: flex;
     margin-bottom: 20px;
+    animation: fadeInUp 1.2s ease-out;
 }
 
 #task-name {
@@ -47,6 +60,13 @@ p {
     font-size: 18px;
     border: 2px solid #ccc;
     border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#task-name:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 button {
@@ -57,11 +77,12 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
     background-color: #45a049;
+    transform: translateY(-3px);
 }
 
 /* Task List Styling */
@@ -69,6 +90,7 @@ button:hover {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    animation: fadeInUp 1s ease-out;
 }
 
 .task-item {
@@ -78,19 +100,27 @@ button:hover {
     background-color: #fafafa;
     padding: 15px;
     margin-bottom: 10px;
-    border-radius: 5px;
-    transition: transform 0.2s ease, background-color 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .task-item:hover {
-    background-color: #f4f4f4;
+    background-color: #f0f0f0;
     transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .task-text {
     flex: 1;
     font-size: 18px;
     padding-left: 10px;
+    transition: color 0.3s ease;
+}
+
+input[type="checkbox"]:checked + .task-text {
+    text-decoration: line-through;
+    color: #888;
 }
 
 button.delete-btn {
@@ -99,15 +129,12 @@ button.delete-btn {
     color: #f44336;
     font-size: 18px;
     cursor: pointer;
+    transition: color 0.3s ease;
 }
 
 button.delete-btn:hover {
     color: #c62828;
-}
-
-input[type="checkbox"]:checked + .task-text {
-    text-decoration: line-through;
-    color: #888;
+    transform: scale(1.2);
 }
 
 /* Footer Styling */
@@ -116,4 +143,48 @@ footer {
     font-size: 14px;
     color: #777;
     margin-top: 20px;
+}
+
+/* Animations */
+@keyframes backgroundColorChange {
+    0% {
+        background: linear-gradient(45deg, #f06, #f79);
+    }
+    50% {
+        background: linear-gradient(45deg, #4CAF50, #81C784);
+    }
+    100% {
+        background: linear-gradient(45deg, #f06, #ffcccb);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
