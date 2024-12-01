@@ -27,6 +27,7 @@ function addTask() {
                 <button class="delete-btn" onclick="deleteTask(${task.id})">❌</button>
             `;
             taskList.appendChild(newTask);
+            newTask.classList.add('task-added');
             document.getElementById("task-name").value = '';  // Reset the input field
         })
         .catch(error => console.error('Error adding task:', error));
@@ -35,22 +36,4 @@ function addTask() {
 
 // Toggle task completion
 function toggleTask(taskId) {
-    const taskItem = document.getElementById('task-' + taskId);
-    const checkbox = document.getElementById('checkbox-' + taskId);
-    const taskText = taskItem.querySelector('.task-text');
-    
-    if (checkbox.checked) {
-        taskText.classList.add('completed');
-    } else {
-        taskText.classList.remove('completed');
-    }
-}
-
-// Delete task
-function deleteTask(taskId) {
-    const taskItem = document.getElementById('task-' + taskId);
-    taskItem.remove();
-
-    // Send delete request to server if needed
-    // fetch('/delete_task', { method: 'DELETE', body: JSON.stringify({ id: taskId }) });
-}
+    const taskItem = document.getElementBy
