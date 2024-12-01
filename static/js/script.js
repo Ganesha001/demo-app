@@ -36,4 +36,26 @@ function addTask() {
 
 // Toggle task completion
 function toggleTask(taskId) {
-    const taskItem = document.getElementBy
+    const taskItem = document.getElementById('task-' + taskId);
+    const checkbox = document.getElementById('checkbox-' + taskId);
+    const taskText = taskItem.querySelector('.task-text');
+    
+    if (checkbox.checked) {
+        taskText.style.textDecoration = 'line-through';
+        taskText.style.color = '#888';
+    } else {
+        taskText.style.textDecoration = 'none';
+        taskText.style.color = '#000';
+    }
+}
+
+// Delete a task
+function deleteTask(taskId) {
+    const taskItem = document.getElementById('task-' + taskId);
+    
+    // Fade out and then remove task
+    taskItem.classList.add('task-deleted');
+    setTimeout(() => {
+        taskItem.remove();
+    }, 1000); // Match the animation time
+}
