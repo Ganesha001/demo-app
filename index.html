@@ -4,143 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive To-Do List</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f4f8;
+            background-color: #f4f4f4;
         }
         h1 {
             text-align: center;
             color: #333;
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .task-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            outline: none;
-        }
-        .task-input:focus {
-            border-color: #3f51b5;
-        }
         .task-list {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         .task-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-        .task-item.completed {
-            background-color: #d3f8d3;
-            text-decoration: line-through;
-        }
-        .btn-complete {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-complete:disabled {
-            background-color: #b0e5b0;
-        }
-        .task-item button {
-            background-color: #ff4c4c;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .task-item button:hover {
-            background-color: #f44336;
-        }
-        .add-task-btn {
-            background-color: #3f51b5;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .add-task-btn:hover {
-            background-color: #303f9f;
+            padding: 10px;
+            margin: 5px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <h1>Interactive To-Do List</h1>
-    <div class="container">
-        <input type="text" id="taskInput" class="task-input" placeholder="Add a new task..." />
-        <button class="add-task-btn" onclick="addTask()">Add Task</button>
-
-        <ul class="task-list">
-            {% for task in tasks %}
-                <li class="task-item {{ 'completed' if task['completed'] else '' }}" id="task-{{ task['id'] }}">
-                    <span>{{ task['task'] }}</span>
-                    <div>
-                        <button onclick="deleteTask({{ task['id'] }})">Delete</button>
-                        <button class="btn-complete" onclick="markCompleted({{ task['id'] }})" {% if task['completed'] %} disabled {% endif %}>Complete</button>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <script>
-        function addTask() {
-            const taskInput = document.getElementById('taskInput');
-            const taskName = taskInput.value.trim();
-            if (!taskName) return alert('Task name is required');
-            
-            fetch('/add_task', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ task: taskName })
-            })
-            .then(response => response.json())
-            .then(data => {
-                taskInput.value = ''; // Clear input
-                location.reload(); // Reload page to show the new task
-            });
-        }
-
-        function deleteTask(taskId) {
-            const taskElement = document.getElementById('task-' + taskId);
-            taskElement.remove();
-        }
-
-        function markCompleted(taskId) {
-            fetch('/mark_completed/' + taskId, {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => {
-                location.reload(); // Reload page to reflect completion status
-            });
-        }
-    </script>
+    <ul class="task-list">
+        {% for task in tasks %}
+            <li class="task-item">
+                <span>{{ task['task'] }}</span>
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
