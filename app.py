@@ -6,12 +6,9 @@ app = Flask(__name__)
 tasks = []
 
 @app.route('/')
-# def index():
-#     """Home route"""
-#     return "<h1>Welcome to the To-Do List API!</h1>"
 def index():
-    """Home route with a beautiful To-Do list interface"""
-    return render_template('index.html', tasks=tasks)
+    """Home route"""
+    return "<h1>Welcome to the web app Ganesh</h1>"
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
