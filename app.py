@@ -33,7 +33,6 @@
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=8080)
 
-
 from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
@@ -49,14 +48,20 @@ def index():
 @app.route('/add_task', methods=['POST'])
 def add_task():
     """Add a new task to the list"""
-    task_data = request.json
-    task_name = task_data.get('task')
-    if not task_name:
-        return jsonify({'error': 'Task name is required'}), 400
-    
-    task = {'id': len(tasks) + 1, 'task': task_name, 'completed': False}
-    tasks.append(task)
-    return jsonify({'message': 'Task added successfully!', 'task': task}), 201
+    try:
+        task_data = request.get_json()  # Parse JSON data
+        if not task_data:
+            return jsonify({'error': 'No JSON data provided'}), 400
+
+        task_name = task_data.get('task')  # Extract task name
+        if not task_name:
+            return jsonify({'error': 'Task name is required'}), 400
+        
+        task = {'id': len(tasks) + 1, 'task': task_name, 'completed': False}
+        tasks.append(task)
+        return jsonify({'message': 'Task added successfully!', 'task': task}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
@@ -66,11 +71,15 @@ def get_tasks():
 @app.route('/mark_completed/<int:task_id>', methods=['POST'])
 def mark_completed(task_id):
     """Mark a task as completed"""
-    task = next((task for task in tasks if task['id'] == task_id), None)
-    if task:
+    try:
+        task = next((task for task in tasks if task['id'] == task_id), None)
+        if not task:
+            return jsonify({'error': 'Task not found'}), 404
+        
         task['completed'] = True
         return jsonify({'message': 'Task marked as completed!', 'task': task}), 200
-    return jsonify({'error': 'Task not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)  # Run in debug mode to get detailed errors
