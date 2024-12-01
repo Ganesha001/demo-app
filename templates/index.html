@@ -3,35 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive To-Do List</title>
+    <title>Christmas Panda Game</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Interactive To-Do List</h1>
-            <p>Add tasks and interact with your to-do list in a fun way!</p>
-        </header>
-        
-        <section class="task-input">
-            <input type="text" id="task-name" placeholder="Add a new task" />
-            <button onclick="addTask()">Add Task</button>
-        </section>
-
-        <ul id="task-list" class="task-list">
-            {% for task in tasks %}
-                <li class="task-item" id="task-{{ task.id }}">
-                    <input type="checkbox" id="checkbox-{{ task.id }}" onclick="toggleTask({{ task.id }})">
-                    <span class="task-text">{{ task.task }}</span>
-                    <button class="delete-btn" onclick="deleteTask({{ task.id }})">❌</button>
-                </li>
-            {% endfor %}
-        </ul>
+    <div id="game-container">
+        <div id="score-container">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+        <div id="game-area">
+            <div class="present" id="present-1"></div>
+            <div class="present" id="present-2"></div>
+            <div class="present" id="present-3"></div>
+            <div id="panda" class="hidden">
+                <img src="panda.png" alt="Panda" id="panda-img">
+                <div id="speech-bubble">Merry Christmas!</div>
+            </div>
+        </div>
     </div>
-
-    <footer>
-        <p>&copy; 2024 All Rights Reserved | Created with ❤️ by Ganesh Patil</p>
-    </footer>
 </body>
 </html>
