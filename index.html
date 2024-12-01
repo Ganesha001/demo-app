@@ -3,109 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List API</title>
+    <title>Interactive To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: #fff;
-            text-align: center;
+            background-color: #f0f4f8;
         }
-
         h1 {
-            margin-top: 20px;
-            font-size: 2.5em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: glow 1.5s infinite alternate;
+            text-align: center;
+            color: #333;
         }
-
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 50px #ff0080;
-            }
-            to {
-                text-shadow: 0 0 20px #ff0080, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 50px #ffffff, 0 0 60px #ffffff;
-            }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
-
-        p {
-            font-size: 1.2em;
+        .task-input {
+            width: 100%;
+            padding: 10px;
             margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
         }
-
-        ul {
+        .task-input:focus {
+            border-color: #3f51b5;
+        }
+        .task-list {
             list-style: none;
             padding: 0;
-            display: inline-block;
-            text-align: left;
         }
-
-        li {
-            font-size: 1.2em;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s, background 0.3s;
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
-
-        li:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.5);
+        .task-item.completed {
+            background-color: #d3f8d3;
+            text-decoration: line-through;
         }
-
-        .button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            color: #2575fc;
-            background: #fff;
+        .btn-complete {
+            background-color: #4caf50;
+            color: white;
             border: none;
-            border-radius: 5px;
+            padding: 8px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background 0.3s, color 0.3s;
         }
-
-        .button:hover {
-            background: #2575fc;
-            color: #fff;
+        .btn-complete:disabled {
+            background-color: #b0e5b0;
         }
-
-        .footer {
-            margin-top: 50px;
-            font-size: 0.9em;
-            opacity: 0.8;
+        .task-item button {
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .task-item button:hover {
+            background-color: #f44336;
+        }
+        .add-task-btn {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .add-task-btn:hover {
+            background-color: #303f9f;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the web application Ganesh</h1>
-    <p>Manage your tasks effortlessly using our API!</p>
-    <ul>
-        <li onclick="showDetails('add_task')">POST /add_task - Add a task</li>
-        <li onclick="showDetails('get_tasks')">GET /tasks - Get all tasks</li>
-    </ul>
-    <button class="button" onclick="getStarted()">Get Started</button>
+    <h1>Interactive To-Do List</h1>
+    <div class="container">
+        <input type="text" id="taskInput" class="task-input" placeholder="Add a new task..." />
+        <button class="add-task-btn" onclick="addTask()">Add Task</button>
 
-    <div class="footer">Crafted with ❤️ for developers</div>
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item {{ 'completed' if task['completed'] else '' }}" id="task-{{ task['id'] }}">
+                    <span>{{ task['task'] }}</span>
+                    <div>
+                        <button onclick="deleteTask({{ task['id'] }})">Delete</button>
+                        <button class="btn-complete" onclick="markCompleted({{ task['id'] }})" {% if task['completed'] %} disabled {% endif %}>Complete</button>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <script>
-        function showDetails(endpoint) {
-            const details = {
-                add_task: "Use this endpoint to add a new task to your to-do list. Provide the task details in JSON format.",
-                get_tasks: "Fetch all tasks in your to-do list. Returns an array of tasks in JSON format."
-            };
-            alert(details[endpoint]);
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskName = taskInput.value.trim();
+            if (!taskName) return alert('Task name is required');
+            
+            fetch('/add_task', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ task: taskName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                taskInput.value = ''; // Clear input
+                location.reload(); // Reload page to show the new task
+            });
         }
 
-        function getStarted() {
-            alert('Navigate to the API documentation to get started!');
+        function deleteTask(taskId) {
+            const taskElement = document.getElementById('task-' + taskId);
+            taskElement.remove();
+        }
+
+        function markCompleted(taskId) {
+            fetch('/mark_completed/' + taskId, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.reload(); // Reload page to reflect completion status
+            });
         }
     </script>
 </body>
